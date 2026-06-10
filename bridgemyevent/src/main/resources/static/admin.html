@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bridge My Event - Admin Console</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet">
+</head>
+<body>
+<div class="sb-overlay" id="sbOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="sb-brand">
+      <div class="b1">Bridge My Event</div><br>
+      <div class="b2">ADMIN CONSOLE</div>
+    </div>
+    <div class="sb-badge-admin">ADMIN</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <a class="sb-link active" data-page="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard Overview</a>
+
+    <div class="sb-section">Management</div>
+    <a class="sb-link" data-page="approvals"><i class="bi bi-person-check"></i>Pending Approvals</a>
+    <a class="sb-link" data-page="users"><i class="bi bi-people"></i>All Users</a>
+    <a class="sb-link" data-page="events"><i class="bi bi-calendar-event"></i>All Events</a>
+    <a class="sb-link" data-page="bookings"><i class="bi bi-journal-bookmark"></i>Bookings</a>
+
+    <div class="sb-section">Insights</div>
+    <a class="sb-link" data-page="analytics"><i class="bi bi-bar-chart-line"></i>Analytics</a>
+    <a class="sb-link" data-page="earnings"><i class="bi bi-wallet2"></i>Earnings</a>
+
+    <div class="sb-section">System</div>
+    <a class="sb-link" data-page="settings"><i class="bi bi-sliders"></i>Settings</a>
+    <a class="sb-link sb-danger" onclick="logout()"><i class="bi bi-box-arrow-left"></i>Logout</a>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-admin-pill">
+      <img src="./assets/Admin-pfp.jpeg" alt="Admin"/>
+      <div>
+        <div class="a-name">Meet Makvana</div>
+        <div class="a-role">Super Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<header class="top-bar" id="topBar">
+  <div class="hdr-left">
+    <button class="ham-btn" id="hamBtn"><i class="bi bi-list"></i></button>
+    <div>
+      <div class="page-title" id="pageTitle">Dashboard Overview</div>
+      <div class="page-sub" id="pageSub">Platform control center</div>
+    </div>
+  </div>
+  <div class="hdr-actions">
+    <div class="admin-chip">
+      <img src="./assets/Admin-pfp.jpeg" alt="Admin"/>
+      <span>meet</span>
+    </div>
+  </div>
+</header>
+
+<div class="main" id="mainWrap">
+<div class="pg-body">
+
+<div class="page active" id="page-dashboard">
+  <div class="kpi-grid">
+    <div class="kpi" style="border-top:3px solid var(--blue);">
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--blue-pale);color:var(--blue)"><i class="bi bi-people-fill"></i></div>
+      </div>
+      <div class="kpi-val" id="dashboardTotalUsers">0</div>
+      <div class="kpi-lbl">Total Users</div>
+      <div class="kpi-sub" id="dashboardUsersSub">Live user count</div>
+    </div>
+    <div class="kpi" style="border-top:3px solid var(--green);">
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--green-pale);color:var(--green)"><i class="bi bi-person-badge-fill"></i></div>
+      </div>
+      <div class="kpi-val" id="dashboardTotalOrganizers">0</div>
+      <div class="kpi-lbl">Total Organizers</div>
+      <div class="kpi-sub"><span style="color:var(--amber);font-weight:600" id="dashboardOrganizerPendingText">0 pending</span> approval</div>
+    </div>
+    <div class="kpi" style="border-top:3px solid var(--amber);">
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--amber-pale);color:var(--amber)"><i class="bi bi-hourglass-split"></i></div>
+      </div>
+      <div class="kpi-val" id="dashboardPendingApprovals">0</div>
+      <div class="kpi-lbl">Pending Approvals</div>
+      <div class="kpi-sub">Requires attention</div>
+    </div>
+    <div class="kpi" style="border-top:3px solid var(--purple);">
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--purple-pale);color:var(--purple)"><i class="bi bi-receipt-cutoff"></i></div>
+      </div>
+      <div class="kpi-val" id="dashboardTotalBookings">0</div>
+      <div class="kpi-lbl">Total Bookings</div>
+      <div class="kpi-sub">Across all platform events</div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-lg-8">
+      <div class="card-a">
+        <div class="card-hdr">
+          <div class="card-hdr-title"><i class="bi bi-lightning-charge"></i>Quick Stats</div>
+          <button class="btn-ghost btn-sm" onclick="refreshAdminData()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        </div>
+        <div style="padding:16px 18px;">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12.5px;color:var(--txt-m)">Published Events</div>
+              <div id="dashboardPublishedEvents" style="font-size:16px;font-weight:800;color:var(--ink)">0</div>
+            </div>
+            <div style="height:1px;background:var(--border-lite)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12.5px;color:var(--txt-m)">Hidden Events</div>
+              <div id="dashboardHiddenEvents" style="font-size:16px;font-weight:800;color:var(--ink)">0</div>
+            </div>
+            <div style="height:1px;background:var(--border-lite)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12.5px;color:var(--txt-m)">Client Accounts</div>
+              <div id="dashboardClients" style="font-size:16px;font-weight:800;color:var(--green)">0</div>
+            </div>
+            <div style="height:1px;background:var(--border-lite)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12.5px;color:var(--txt-m)">Flagged Events</div>
+              <div id="dashboardFlaggedEvents" style="font-size:16px;font-weight:800;color:var(--red)">0</div>
+            </div>
+            <div style="height:1px;background:var(--border-lite)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12.5px;color:var(--txt-m)">Active Accounts</div>
+              <div id="dashboardActiveUsers" style="font-size:16px;font-weight:800;color:var(--green)">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card-a h-100">
+        <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-shield-check"></i>Moderation Snapshot</div></div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">Suspended Users</span><span id="dashboardSuspendedUsers" style="font-size:14px;font-weight:800;color:var(--amber)">0</span></div>
+          <div style="height:1px;background:var(--border-lite)"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">Total Events</span><span id="dashboardTotalEvents" style="font-size:14px;font-weight:800;color:var(--blue)">0</span></div>
+          <div style="height:1px;background:var(--border-lite)"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:600">Platform Health</span><span style="font-size:14px;font-weight:800;color:var(--green)">Operational</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <div><h3>Recent Platform Activity</h3><p>Latest admin-relevant activity from the live database</p></div>
+  </div>
+  <div class="card-a">
+    <div class="act-feed" id="recentActivityFeed"></div>
+  </div>
+</div>
+
+<div class="page" id="page-approvals">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left"><h3>Pending Organizer Approvals</h3><p>Review and approve organizer registration requests</p></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="search-box d-flex" style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:99px; padding:8px 16px; align-items:center; gap:8px;">
+        <i class="bi bi-search" style="color:var(--txt-m)"></i>
+        <input type="text" id="approvalsSearch" placeholder="Search name, company..." style="border:none; background:transparent; outline:none; width:220px; font-size:14px;">
+      </div>
+    </div>
+  </div>
+  <div class="card-a">
+    <div style="overflow-x:auto">
+      <table class="dt">
+        <thead>
+          <tr><th>Organizer</th><th>Organizer Name</th><th>Mobile No</th><th>Experience</th><th>Applied At</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="approvalsTbody"></tbody>
+      </table>
+    </div>
+  </div>  <div class="card-a detail-card hidden" id="organizerDetailPanel">
+    <div class="card-hdr">
+      <div class="card-hdr-title"><i class="bi bi-person-badge"></i>Organizer Profile Details</div>
+      <button class="btn-ghost btn-sm" onclick="closeDetailPanel('organizerDetailPanel')">Close</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-sidebar">
+          <img id="detailOrgImage" src="./assets/default-pfp.png" alt="Organizer" class="detail-avatar" />
+          <div class="detail-header"><div id="detailOrgName">-</div><div id="detailOrgCompany" class="detail-sub">-</div></div>
+          <div class="detail-meta"><span class="bdg bdg-organizer" id="detailOrgStatus">-</span></div>
+          <div class="detail-summary"><div><strong>Email</strong><p id="detailOrgEmail">-</p></div><div><strong>Joined</strong><p id="detailOrgJoined">-</p></div><div><strong>Phone</strong><p id="detailOrgPhone">-</p></div><div><strong>Location</strong><p id="detailOrgCityState">-</p></div><div><strong>Approval Status</strong><p id="detailOrgApproval">-</p></div></div>
+        </div>
+        <div>
+          <div class="detail-grid-sm">
+            <div class="detail-card-row"><div class="detail-label">Experience</div><div id="detailOrgExperience" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">GST Number</div><div id="detailOrgGst" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Rating</div><div id="detailOrgRating" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Reviews</div><div id="detailOrgReviews" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Event Types</div><div id="detailOrgEventTypes" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Locations</div><div id="detailOrgLocations" class="detail-value">-</div></div>
+          </div>
+          <div class="detail-section"><div class="detail-section-title">About</div><p id="detailOrgAbout">-</p></div>
+          <div class="detail-section"><div class="detail-section-title">Description</div><p id="detailOrgDescription">-</p></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+<div class="page" id="page-users">
+  <div class="sec-hdr" style="gap:20px;">
+    <div class="sec-hdr-left"><h3>All Users</h3><p>Manage platform users, roles and account status</p></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="search-box" style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:99px; padding:8px 16px; align-items:center; gap:8px;">
+        <i class="bi bi-search" style="color:var(--txt-m)"></i>
+        <input type="text" id="usersSearch" placeholder="Search name, email, city..." style="border:none; background:transparent; outline:none; width:220px; font-size:14px;">
+      </div>
+      <select id="usersRoleFilter" class="fld-input" style="width:auto; padding:7px 14px; font-size:13px; border-radius:99px;">
+        <option value="ALL">All Roles</option>
+        <option value="CLIENT">Client</option>
+        <option value="ORGANIZER">Organizer</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-a">
+    <div style="overflow-x:auto">
+      <table class="dt">
+        <thead><tr><th>User</th><th>Role</th><th>City</th><th>Joined</th><th>Bookings</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="usersTbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-a detail-card hidden" id="userDetailPanel">
+    <div class="card-hdr">
+      <div class="card-hdr-title"><i class="bi bi-person-lines-fill"></i>User Profile Details</div>
+      <button class="btn-ghost btn-sm" onclick="closeDetailPanel('userDetailPanel')">Close</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-sidebar">
+          <img id="detailUserImage" src="./assets/default-pfp.png" alt="User" class="detail-avatar" />
+          <div class="detail-header"><div id="detailUserName">-</div><div id="detailUserEmail" class="detail-sub">-</div></div>
+          <div class="detail-meta"><span class="bdg bdg-user" id="detailUserRole">-</span></div>
+          <div class="detail-summary"><div><strong>Status</strong><p id="detailUserStatus">-</p></div><div><strong>Joined</strong><p id="detailUserJoined">-</p></div><div><strong>Bookings</strong><p id="detailUserBookings">0</p></div></div>
+        </div>
+        <div>
+          <div class="detail-grid-sm">
+            <div class="detail-card-row organizer-only"><div class="detail-label">Company</div><div id="detailUserCompany" class="detail-value">-</div></div>
+            <div class="detail-card-row organizer-only"><div class="detail-label">Experience</div><div id="detailUserExperience" class="detail-value">-</div></div>
+            <div class="detail-card-row organizer-only"><div class="detail-label">GST Number</div><div id="detailUserGst" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Phone</div><div id="detailUserPhone" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Location</div><div id="detailUserCityState" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Profile Type</div><div id="detailUserType" class="detail-value">-</div></div>
+            <div class="detail-card-row organizer-only"><div class="detail-label">Supported Events</div><div id="detailUserEvents" class="detail-value">-</div></div>
+            <div class="detail-card-row organizer-only"><div class="detail-label">Service Areas</div><div id="detailUserLocations" class="detail-value detail-location-list">-</div></div>
+          </div>
+          <div class="detail-section"><div class="detail-section-title">About</div><p id="detailUserAbout">-</p></div>
+          <div class="detail-section"><div class="detail-section-title">Description</div><p id="detailUserDescription">-</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-events">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left"><h3>All Events</h3><p>Moderate event listings across the platform</p></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="search-box d-flex" style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:99px; padding:8px 16px; align-items:center; gap:8px;">
+        <i class="bi bi-search" style="color:var(--txt-m)"></i>
+        <input type="text" id="eventsSearch" placeholder="Search event, organizer..." style="border:none; background:transparent; outline:none; width:220px; font-size:14px;">
+      </div>
+    </div>
+  </div>
+  <div class="card-a">
+    <div style="overflow-x:auto">
+      <table class="dt">
+        <thead><tr><th>Event Name</th><th>Organizer</th><th>Category</th><th>Location</th><th>Price</th><th>Bookings</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="eventsTbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-a detail-card hidden" id="eventDetailPanel">
+    <div class="card-hdr">
+      <div class="card-hdr-title"><i class="bi bi-calendar-event-fill"></i>Event Details</div>
+      <button class="btn-ghost btn-sm" onclick="closeDetailPanel('eventDetailPanel')">Close</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-sidebar">
+          <div class="detail-header"><div id="detailEventName">-</div><div id="detailEventOrganizer" class="detail-sub">-</div></div>
+          <div class="detail-meta"><span class="bdg bdg-open" id="detailEventStatus">-</span></div>
+          <div class="detail-summary"><div><strong>Venue</strong><p id="detailEventVenue">-</p></div><div><strong>Location</strong><p id="detailEventLocation">-</p></div><div><strong>Phone</strong><p id="detailEventPhone">-</p></div></div>
+        </div>
+        <div>
+          <div class="detail-section detail-gallery-section">
+            <div class="detail-section-title">Event Photos</div>
+            <div class="event-gallery" id="detailEventGallery">
+              <div class="event-gallery-main"><img id="detailEventGalleryMain" src="./assets/IMG-20251005-WA0001.jpg" alt="Event photo"/></div>
+              <div class="event-gallery-thumbs" id="detailEventGalleryThumbs"></div>
+              <button type="button" class="btn-ghost btn-sm event-gallery-toggle hidden" id="detailEventGalleryToggle">See all photos</button>
+              <div class="event-gallery-expanded hidden" id="detailEventGalleryExpanded"></div>
+            </div>
+          </div>
+          <div class="detail-grid-sm">
+            <div class="detail-card-row"><div class="detail-label">Category</div><div id="detailEventCategory" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Price</div><div id="detailEventPrice" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Capacity</div><div id="detailEventCapacity" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Bookings</div><div id="detailEventBookings" class="detail-value">0</div></div>
+          </div>
+          <div class="detail-section"><div class="detail-section-title">Description</div><p id="detailEventDescription">-</p></div>
+          <div class="detail-section"><div class="detail-section-title">Supported Events</div><div id="detailEventSupported" class="detail-chip-grid"></div></div>
+          <div class="detail-section"><div class="detail-section-title">Amenities</div><div id="detailEventAmenities" class="detail-chip-grid"></div></div>
+          <div class="detail-section"><div class="detail-section-title">Availability</div><div id="detailEventAvailability" class="detail-chip-grid"></div></div>
+          <div class="detail-section"><div class="detail-section-title">Setups</div><div id="detailEventSetupList" class="setup-list"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-bookings">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left"><h3>Bookings</h3><p>Review all booking requests, event status, payment details, and admin actions.</p></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="search-box d-flex" style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:99px; padding:8px 16px; align-items:center; gap:8px;">
+        <i class="bi bi-search" style="color:var(--txt-m)"></i>
+        <input type="text" id="adminBookingsSearch" placeholder="Search client, event..." style="border:none; background:transparent; outline:none; width:220px; font-size:14px;">
+      </div>
+      <input type="date" id="adminBookingsSpecificDate" class="fld-input" style="width:auto; padding:6px 12px; font-size:13px; border-radius:99px;" title="Search specific date">
+      <select id="adminBookingsAdminFeeFilter" class="fld-input" style="width:auto; padding:7px 14px; font-size:13px; border-radius:99px;">
+        <option value="ALL">Admin Fee: All</option>
+        <option value="PENDING_PAYMENT">Admin Fee: Pending</option>
+        <option value="AWAITING_CONFIRMATION">Admin Fee: Awaiting Confirmation</option>
+        <option value="PAID">Admin Fee: Paid</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-a">
+    <div style="overflow-x:auto">
+      <table class="dt">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Client</th>
+            <th>Organizer</th>
+            <th>Venue</th>
+            <th>Guests</th>
+            <th>Event Status</th>
+            <th>Booking Status</th>
+            <th>Admin Fee</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-a detail-card hidden" id="bookingDetailPanel">
+    <div class="card-hdr">
+      <div class="card-hdr-title"><i class="bi bi-journal-bookmark"></i>Booking Details</div>
+      <button class="btn-ghost btn-sm" onclick="closeDetailPanel('bookingDetailPanel')">Close</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-sidebar">
+          <div class="detail-header"><div id="detailBookingId">-</div><div id="detailBookingClient" class="detail-sub">-</div></div>
+          <div class="detail-meta"><span class="bdg bdg-open" id="detailBookingStatus">-</span></div>
+          <div class="detail-summary">
+            <div><strong>Client Email</strong><p id="detailBookingClientEmail">-</p></div>
+            <div><strong>Client Phone</strong><p id="detailBookingClientPhone">-</p></div>
+            <div><strong>Organizer</strong><p id="detailBookingOrganizer">-</p></div>
+            <div><strong>Event</strong><p id="detailBookingEvent">-</p></div>
+            <div><strong>Venue</strong><p id="detailBookingVenue">-</p></div>
+            <div><strong>Event Status</strong><p id="detailBookingEventStatus">-</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-grid-sm">
+            <div class="detail-card-row"><div class="detail-label">Guests</div><div id="detailBookingGuests" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Payment Status</div><div id="detailBookingPayment" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Total Amount</div><div id="detailBookingTotal" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Deposit Paid</div><div id="detailBookingDeposit" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Admin Fee</div><div id="detailBookingAdminFee" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Admin Payment</div><div id="detailBookingAdminPaymentStatus" class="detail-value">-</div></div>
+            <div class="detail-card-row"><div class="detail-label">Order ID</div><div id="detailBookingOrderId" class="detail-value">-</div></div>
+          </div>
+          <div class="detail-section"><div class="detail-section-title">Booking Schedule</div><div id="detailBookingSchedule" class="detail-chip-grid"></div></div>
+          <div class="detail-section"><div class="detail-section-title">Client Message</div><p id="detailBookingMessage">-</p></div>
+          <div class="detail-section"><div class="detail-section-title">Payment Details</div><div id="detailBookingPaymentDetails" class="detail-value">-</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-reports">
+  <div class="sec-hdr"><div><h3>Reports & Complaints</h3><p>Ignored for now as requested</p></div></div>
+  <div class="card-a" style="padding:20px;color:var(--txt-m)">Message and report workflows are intentionally skipped in this pass.</div>
+</div>
+
+<div class="page" id="page-analytics">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left"><h3>Analytics</h3><p>Monthly, yearly and event frequency insights</p></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <input type="month" id="adminAnalyticsMonthYearFilter" class="fld-input" title="Filter by Month" style="width:auto; padding:7px 14px; font-size:13px; border-radius:99px;">
+      <input type="number" id="adminAnalyticsYearFilter" class="fld-input" placeholder="YYYY" title="Filter by Year" style="width:90px; padding:7px 14px; font-size:13px; border-radius:99px;">
+      <button class="btn-outline-v btn-sm" id="adminAnalyticsFilterClear">Clear</button>
+    </div>
+  </div>
+  <div class="analytics-kpi">
+    <div class="kpi" style="border-top:3px solid var(--blue)"><div class="kpi-val" id="analyticsUsers">0</div><div class="kpi-lbl">Registered Users</div></div>
+    <div class="kpi" style="border-top:3px solid var(--green)"><div class="kpi-val" id="analyticsOrganizers">0</div><div class="kpi-lbl">Organizers</div></div>
+    <div class="kpi" style="border-top:3px solid var(--purple)"><div class="kpi-val" id="analyticsEvents">0</div><div class="kpi-lbl">Events</div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="card-a">
+      <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-bar-chart"></i>Monthly Event Trend</div></div>
+      <div style="padding:16px 18px"><canvas id="adminMonthlyTrendChart" height="110"></canvas></div>
+    </div>
+    <div class="card-a">
+      <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-calendar3"></i>Yearly Trend</div></div>
+      <div style="padding:16px 18px"><canvas id="adminYearlyTrendChart" height="110"></canvas></div>
+    </div>
+  </div>
+  <div class="card-a mt-3">
+    <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-trophy"></i>Most Organized Events</div></div>
+    <div style="padding:8px 18px 16px">
+      <div style="overflow-x:auto">
+        <table class="dt">
+          <thead><tr><th>Event</th><th>Times Organized</th></tr></thead>
+          <tbody id="adminTopEventsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-earnings">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left"><h3>Earnings</h3><p>Platform gross, admin fee revenue, and payment statements</p></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <input type="month" id="adminEarningsMonthYearFilter" class="fld-input" title="Filter by Month" style="width:auto; padding:7px 14px; font-size:13px; border-radius:99px;">
+      <input type="number" id="adminEarningsYearFilter" class="fld-input" placeholder="YYYY" title="Filter by Year" style="width:90px; padding:7px 14px; font-size:13px; border-radius:99px;">
+      <button class="btn-outline-v btn-sm" id="adminEarningsFilterClear">Clear</button>
+    </div>
+  </div>
+  <div class="analytics-kpi">
+    <div class="kpi" style="border-top:3px solid var(--green)"><div class="kpi-val" id="adminTotalGrossRevenue">₹0</div><div class="kpi-lbl">Total Gross Revenue</div></div>
+    <div class="kpi" style="border-top:3px solid var(--blue)"><div class="kpi-val" id="adminTotalAdminFees">₹0</div><div class="kpi-lbl">Total Admin Fees</div></div>
+    <div class="kpi" style="border-top:3px solid var(--purple)"><div class="kpi-val" id="adminCompletedBookings">0</div><div class="kpi-lbl">Completed Bookings</div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="card-a">
+      <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-graph-up"></i>Monthly Revenue vs Fees</div></div>
+      <div style="padding:16px 18px"><canvas id="adminEarningsMonthlyChart" height="110"></canvas></div>
+    </div>
+    <div class="card-a">
+      <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-calendar2-range"></i>Yearly Revenue vs Fees</div></div>
+      <div style="padding:16px 18px"><canvas id="adminEarningsYearlyChart" height="110"></canvas></div>
+    </div>
+  </div>
+  <div class="card-a mt-3">
+    <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-journal-text"></i>Earnings Statements</div></div>
+    <div style="padding:8px 18px 16px">
+      <div style="overflow-x:auto">
+        <table class="dt">
+          <thead><tr><th>Date</th><th>Booking</th><th>Event</th><th>Organizer</th><th>Gross</th><th>Admin Fee</th><th>Status</th></tr></thead>
+          <tbody id="adminEarningsStatementsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="page" id="page-settings">
+  <div class="sec-hdr"><div><h3>Platform Settings</h3><p>Local-only admin preferences currently available</p></div></div>
+  <div class="settings-grid">
+    <div class="card-a" style="padding:16px;">
+      <div class="settings-menu">
+        <div class="sm-item active"><i class="bi bi-sliders"></i>General</div>
+      </div>
+    </div>
+    <div>
+      <div class="card-a mb-4">
+        <div class="card-hdr"><div class="card-hdr-title"><i class="bi bi-toggles"></i>Feature Toggles</div></div>
+        <div style="padding:16px 20px">
+          <div class="toggle-row">
+            <div class="t-info">
+              <h6>Payment Mode</h6>
+              <p>Switch between Fake (sandbox) and Real (coming soon)</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div id="paymentModeLabel" style="font-size:12px;color:var(--txt-m)">Fake</div>
+              <label class="t-sw"><input type="checkbox" id="paymentModeToggle"/><span class="t-thumb"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="modal-backdrop-v" id="orgModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h5><i class="bi bi-person-check" style="color:var(--blue);margin-right:6px"></i>Organizer Profile Review</h5>
+      <button class="modal-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body-v">
+      <div class="org-preview">
+        <img src="./assets/default-pfp.png" alt="Org" id="modalImg"/>
+        <h5 id="orgCompany">-</h5>
+        <p id="orgEmail">-</p>
+      </div>
+      <div class="org-details">
+        <div class="org-detail-item"><div class="od-lbl">Organizer Name</div><div id="orgName" class="od-val">-</div></div>
+        <div class="org-detail-item"><div class="od-lbl">Experience</div><div id="orgExp" class="od-val">-</div></div>
+        <div class="org-detail-item"><div class="od-lbl">Applied On</div><div id="orgDate" class="od-val">-</div></div>
+        <div class="org-detail-item"><div class="od-lbl">GST / ID</div><div id="orgGst" class="od-val">-</div></div>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt-l);letter-spacing:.05em;margin-bottom:5px">contact no.</div>
+        <p id="orgPhone" style="font-size:13px;color:var(--txt);margin:0;line-height:1.6">-</p>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt-l);letter-spacing:.05em;margin-bottom:5px">Event types</div>
+        <p id="orgEvent" style="font-size:13px;color:var(--txt);margin:0;line-height:1.6">-</p>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt-l);letter-spacing:.05em;margin-bottom:5px">Location</div>
+        <p id="orgLocations" style="font-size:13px;color:var(--txt);margin:0;line-height:1.6">-</p>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt-l);letter-spacing:.05em;margin-bottom:5px">ABOUT</div>
+        <p id="orgAbout" style="font-size:13px;color:var(--txt);margin:0;line-height:1.6">-</p>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt-l);letter-spacing:.05em;margin-bottom:5px">DESCRIPTION</div>
+        <p id="orgDesc" style="font-size:13px;color:var(--txt);margin:0;line-height:1.6">-</p>
+      </div>
+    </div>
+    <div class="modal-footer-v">
+      <button class="btn-reject" onclick="rejectFromModal()"><i class="bi bi-x-circle"></i> Reject Application</button>
+      <button class="btn-approve" style="padding:9px 20px;font-size:13px" onclick="approveFromModal()"><i class="bi bi-check-circle"></i> Approve Organizer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

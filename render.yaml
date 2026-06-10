@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: bridgemyevent
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: PORT
+        value: 8080

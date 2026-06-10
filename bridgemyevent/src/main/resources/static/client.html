@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bridge My Event — Client Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap"
+    rel="stylesheet" />
+
+  <link href="css/client.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="sb-overlay" id="sbOverlay"></div>
+
+  <div class="account-status-overlay" id="accountStatusOverlay" style="display:none">
+    <div class="status-card">
+      <div class="status-icon"><i class="bi bi-exclamation-octagon-fill"></i></div>
+      <h2 id="statusTitle">Account Restricted</h2>
+      <p id="statusMessage">Your account has been suspended by the administrator. Please contact support for more information.</p>
+      <button class="btn-sky" onclick="logout()" style="width:100%">Logout</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+     TOAST CONTAINER
+════════════════════════════════ -->
+  <div class="toast-container-v" id="toastContainer"></div>
+
+  <!-- ════════════════════════════════
+     SIDEBAR
+════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-top">
+      <div class="sb-brand">
+        <img src="./assets/client_logo.png" alt="Bme Logo" style="height:50px;" />
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="nav-grp-lbl">Menu</div>
+      <a class="sb-item active" data-page="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</a>
+      <a class="sb-item exploreOrganizers" data-page="explore"><i class="bi bi-compass"></i>Explore Venues</a>
+      <a class="sb-item" data-page="bookings"><i class="bi bi-calendar-check"></i>My Bookings</a>
+      <a class="sb-item" data-page="saved"><i class="bi bi-bookmark-heart"></i>Saved Venues</a>
+      <div class="nav-grp-lbl">Account</div>
+      <a class="sb-item" data-page="reviews"><i class="bi bi-star-half"></i>My Reviews</a>
+      <a class="sb-item" data-page="profile"><i class="bi bi-person-gear"></i>Profile Settings</a>
+      <a class="sb-item sb-item-danger" onclick="logout()"><i class="bi bi-box-arrow-left"></i>Logout</a>
+    </nav>
+  </aside>
+
+  <!-- ════════════════════════════════
+     TOP BAR
+════════════════════════════════ -->
+  <header class="topbar" id="topbar">
+    <div class="tb-left">
+      <button class="ham" id="hamBtn"><i class="bi bi-list"></i></button>
+      <div class="hdr-left-text" style="display: flex; flex-direction: column; justify-content: center; padding-left: 15px;">
+        <div id="topbarTitle" style="margin: 0; font-weight: 600; font-size: 1.1rem; color: var(--txt-h); line-height: 1.2;">Dashboard</div>
+        <div id="topbarSubtitle" style="font-size: 0.85rem; color: var(--txt-m); line-height: 1.2;">Welcome to your dashboard</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <!-- Q&A Section -->
+      <div class="position-relative">
+        <div class="tb-icon-btn" id="qaBtn"><i class="bi bi-question-circle"></i></div>
+        <div class="notif-dd" id="qaDd" style="width: 320px;">
+  
+          <div class="nd-head">
+            <h6>Frequently Asked Questions</h6>
+          </div>
+        
+          <!-- Booking -->
+          <div class="nd-row" style="cursor: default;">
+            <div class="nd-text">
+              <p style="margin-bottom: 4px;"><strong>How do I book an event?</strong></p>
+              <p style="font-size: 12px; color: var(--txt-m); margin: 0;">
+                Browse organizers, select your preferred one, choose date & time, and confirm booking by paying 50% advance.
+              </p>
+            </div>
+          </div>
+        
+          <!-- Payment -->
+          <div class="nd-row" style="cursor: default;">
+            <div class="nd-text">
+              <p style="margin-bottom: 4px;"><strong>How does payment work?</strong></p>
+              <p style="font-size: 12px; color: var(--txt-m); margin: 0;">
+                You pay 50% during booking and the remaining 50% after successful event completion.
+              </p>
+            </div>
+          </div>
+        
+          <!-- Cancellation -->
+          <div class="nd-row" style="cursor: default;">
+            <div class="nd-text">
+              <p style="margin-bottom: 4px;"><strong>Can I cancel my booking?</strong></p>
+              <p style="font-size: 12px; color: var(--txt-m); margin: 0;">
+                Yes, but the 50% advance payment is non-refundable if you cancel the event.
+              </p>
+            </div>
+          </div>
+        
+          <!-- Reschedule -->
+          <div class="nd-row" style="cursor: default;">
+            <div class="nd-text">
+              <p style="margin-bottom: 4px;"><strong>Can I reschedule my event?</strong></p>
+              <p style="font-size: 12px; color: var(--txt-m); margin: 0;">
+                Yes, you can reschedule your event one time without any penalty.
+              </p>
+            </div>
+          </div>
+        
+          <!-- Contact -->
+          <div class="nd-row" style="cursor: default;">
+            <div class="nd-text">
+              <p style="margin-bottom: 4px;"><strong>How do I contact the organizer?</strong></p>
+              <p style="font-size: 12px; color: var(--txt-m); margin: 0;">
+                You can communicate directly using the organizer's contact details provided after booking.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Profile Dropdown -->
+      <div class="position-relative">
+        <div class="avatar-btn" id="avatarBtn">
+          <img class="profilePicture" src="./assets/default-pfp.png" alt="Tushar" />
+          <span class="av-name cardUserName">Tushar</span>
+          <i class="bi bi-chevron-down" style="font-size:11px;color:var(--txt-l)"></i>
+        </div>
+        <div class="profile-dd" id="profileDd">
+          <div class="pd-head">
+            <img class="profilePicture" src="./assets/default-pfp.png" alt="Tushar" />
+            <div class="pdh-name cardFullName">Tushar Rathi</div>
+            <div class="pdh-email cardEmail">tushar@email.com</div>
+          </div>
+          <div class="pd-item" onclick="navigateTo('profile')"><i class="bi bi-person-gear"></i>Profile Settings</div>
+          <div style="height:1px;background:var(--border);margin:4px 0"></div>
+          <div class="pd-item danger" onclick="logout()"><i class="bi bi-box-arrow-left"></i>Logout</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════
+     MAIN PAGES
+════════════════════════════════ -->
+  <div class="main-wrap" id="mainWrap">
+    <div class="pg-body">
+
+      <!-- ░░░░ DASHBOARD PAGE ░░░░ -->
+      <div class="page active" id="page-dashboard">
+
+        <!-- Skeleton loader (shows briefly on first load) -->
+        <div id="skeletonLoader" style="margin-top:22px">
+          <div class="row g-3 mb-4">
+            <div class="col-3">
+              <div class="sk-card">
+                <div class="skeleton sk-line" style="width:40px;height:40px;border-radius:10px;margin-bottom:14px">
+                </div>
+                <div class="skeleton sk-line" style="width:60px;height:28px;margin-bottom:6px"></div>
+                <div class="skeleton sk-line" style="width:100px"></div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="sk-card">
+                <div class="skeleton sk-line" style="width:40px;height:40px;border-radius:10px;margin-bottom:14px">
+                </div>
+                <div class="skeleton sk-line" style="width:60px;height:28px;margin-bottom:6px"></div>
+                <div class="skeleton sk-line" style="width:100px"></div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="sk-card">
+                <div class="skeleton sk-line" style="width:40px;height:40px;border-radius:10px;margin-bottom:14px">
+                </div>
+                <div class="skeleton sk-line" style="width:60px;height:28px;margin-bottom:6px"></div>
+                <div class="skeleton sk-line" style="width:100px"></div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="sk-card">
+                <div class="skeleton sk-line" style="width:40px;height:40px;border-radius:10px;margin-bottom:14px">
+                </div>
+                <div class="skeleton sk-line" style="width:60px;height:28px;margin-bottom:6px"></div>
+                <div class="skeleton sk-line" style="width:100px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actual content (hidden during skeleton) -->
+        <div id="dashboardContent" style="display:none;margin-top:22px">
+
+          <!-- Stats -->
+          <div class="stats-grid mb-4">
+            <div class="stat-card sc-1">
+              <div class="sc-icon"><i class="bi bi-receipt-cutoff"></i></div>
+              <div class="sc-val" id="clientTotalBookingsStat">0</div>
+              <div class="sc-lbl">Total Bookings</div>
+              <div class="sc-trend sc-up"><i class="bi bi-arrow-up-short"></i>+5 this month</div>
+            </div>
+            <div class="stat-card sc-2">
+              <div class="sc-icon"><i class="bi bi-calendar-event"></i></div>
+              <div class="sc-val" id="clientUpcomingBookingsStat">0</div>
+              <div class="sc-lbl">Upcoming Events</div>
+              <div class="sc-trend sc-ne"><i class="bi bi-dash"></i>Next in 6 days</div>
+            </div>
+            <div class="stat-card sc-3">
+              <div class="sc-icon"><i class="bi bi-hourglass-split"></i></div>
+              <div class="sc-val" id="clientPendingBookingsStat">0</div>
+              <div class="sc-lbl">Pending Requests</div>
+              <div class="sc-trend sc-dw"><i class="bi bi-arrow-up-short"></i>Needs action</div>
+            </div>
+            <div class="stat-card sc-4">
+              <div class="sc-icon"><i class="bi bi-bookmark-heart-fill"></i></div>
+              <div class="sc-val">8</div>
+              <div class="sc-lbl">Saved Organizers</div>
+              <div class="sc-trend sc-up"><i class="bi bi-arrow-up-short"></i>+2 new</div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <!-- Bookings Table -->
+            <div class="col-lg-8">
+              <div class="sec-hdr">
+                <div class="sec-hdr-l">
+                  <h3>Upcoming Bookings</h3>
+                  <p>Your confirmed and pending events</p>
+                </div>
+                <a class="btn-link-sky" onclick="navigateTo('bookings')">View all <i class="bi bi-arrow-right"></i></a>
+              </div>
+              <div class="card-b">
+                <div style="overflow-x:auto">
+                  <table class="tbl">
+                    <thead>
+                      <tr>
+                        <th>Event Name</th>
+                        <th>Organizer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clientUpcomingBookingsBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- end dashboardContent -->
+      </div>
+
+      <!-- ░░░░ EXPLORE ORGANIZERS ░░░░ -->
+      <div class="page" id="page-explore">
+        <div class="explore-card-wrap">
+          <div class="sec-hdr">
+            <div class="sec-hdr-l">
+              <h3>Explore Organizers</h3>
+              <p>Discover top-rated event professionals near you</p>
+            </div>
+          </div>
+          <div class="profileErrorAtExplore" id="profileErrorAtExplore" style="color:red;"></div>
+          <div class="search-filter-wrap mb-4">
+            <div class="explore-search-bar mb-3">
+              <i class="bi bi-search search-icon"></i>
+              <input type="text" id="exploreSearch" placeholder="Search by name, company or venue..." />
+              <button class="search-btn"><i class="bi bi-arrow-right"></i></button>
+            </div>
+            <div class="filter-controls-row">
+              <div class="filter-group">
+                <label>City</label>
+                <select id="filterCity">
+                  <option value="">All Cities</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label>Venue Type</label>
+                <select id="filterVenueType">
+                  <option value="">All Types</option>
+                  <option>Auditorium</option>
+                  <option>Banquet Hall</option>
+                  <option>Open Ground</option>
+                  <option>Lawn</option>
+                  <option>Hotel</option>
+                  <option>Resort</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label>Price Range</label>
+                <select id="filterPrice">
+                  <option value="">Any Price</option>
+                  <option value="0-50000">Under ₹50,000</option>
+                  <option value="50000-100000">₹50k - ₹1 Lakh</option>
+                  <option value="100000-500000">₹1L - ₹5 Lakhs</option>
+                  <option value="500000+">Above ₹5 Lakhs</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label>Availability</label>
+                <input type="date" id="filterDate" />
+              </div>
+            </div>
+          </div>
+
+          <div class="my-3" id="explore-tabs">
+            <select class="sort-sel" id="exploreSort">
+              <option value="rating">Sort: Highest Rated</option>
+              <option value="popular">Sort: Most Popular</option>
+              <option value="price-low">Sort: Price: Low to High</option>
+              <option value="price-high">Sort: Price: High to Low</option>
+            </select>
+          </div>
+          <div class="events-grid" id="myEventsContainer">
+            <!-- Event Card -->
+            <div class="event-card">
+              <div class="event-img-wrap">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" class="event-img"
+                  alt="" />
+              </div>
+              <div class="event-body g-4">
+                <div class="event-title">Royal Garden Wedding Package</div>
+                <div class="ev-meta-item"><i class="bi bi-geo-alt"></i>Ahmedabad, Gujarat</div>
+                <div class="event-meta">
+                  <div class="ev-meta-item"><i class="bi bi-people"></i>Up to 300</div>
+                  <div class="ev-meta-item"><i class="bi bi-star-fill" style="color:#F59E0B"></i>4.9</div>
+                </div>
+                <div class="ev-meta-item myEvCardVenTy"><i class="bi bi-flower2"></i>Open Ground</div>
+                <div class="event-footer">
+                  <div class="event-price">₹2,00,000<span>/event</span></div>
+                </div>
+                <div class="org-footer">
+                  <button class="btn-sky-o btn-sm" style="flex:1"><i class="bi bi-eye"></i>View Venue</button>
+                  <button class="btn-sky btn-sm" style="flex:1"
+                    onclick="showToast('Redirecting to booking…','info','bi-calendar-plus')"><i
+                      class="bi bi-calendar-plus"></i>Book Venue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event-detail-wrap" style="display:none">
+          <div>
+            <!-- Page Header -->
+            <div class="sec-hdr fade-in">
+              <div class="sec-hdr-left">
+                <h2 class="venueName">Grand Palace Banquet</h2>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn-outline-v" onclick="backToMyEvents()"><i class="bi bi-arrow-left"></i> Back</button>
+                <button class="btn-outline-v book-venue-btn" onclick="openBooking()"><i
+                    class="bi bi-calendar-plus"></i>Book Venue</button>
+              </div>
+            </div>
+
+            <div class="row g-4 fade-in">
+              <!-- Left Column -->
+              <div class="col-lg-8">
+
+                <!-- Hero Gallery -->
+                <div class="event-hero mb-4">
+                  <div class="hero-gallery">
+                    <div class="hero-img-main">
+                      <img src="./assets/IMG-20251005-WA0001.jpg" alt="Grand Palace Banquet main hall" />
+                    </div>
+                    <div class="hero-img-sub">
+                      <img src="./assets/IMG-20251005-WA0002.jpg" alt="Banquet setup" />
+                    </div>
+                    <div class="hero-img-sub" style="position:relative">
+                      <img src="./assets/IMG-20251005-WA0005.jpg" alt="Dining setup" />
+                      <button class="more-photos-btn"><i class="bi bi-images"></i> +8 Photos</button>
+                    </div>
+                  </div>
+                  <div class="hero-info">
+                    <div class="hero-info-left">
+                      <h1 class="event-name venueName">Grand Palace Banquet</h1>
+                      <div class="event-company-name-box">
+                        <i class="bi bi-person-fill"></i>
+                        <h6 class="event-company-name"> Company Name</h6>
+                      </div>
+                      <div class="event-tags">
+                        <div class="ev-tag">
+                          <i class="bi bi-flower2"></i>
+                          <span class="venueType">Banquet Hall</span>
+                        </div>
+                      </div>
+                      <div class="meta-col">
+                        <div class="meta-item"><i class="bi bi-geo-alt-fill"></i> <strong>Ahmedabad,</strong></div>
+                        <div class="meta-item"><i class="bi bi-people-fill"></i> Up to <strong>800</strong> guests</div>
+                        <div class="meta-item">
+                          <span class="rating-stars">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                              class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                          </span>
+                          <strong style="color:var(--txt-h)">4.9</strong> <span style="color:var(--txt-m)">(36
+                            reviews)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="hero-info-right">
+                      <div class="price-block">
+                        <div class="price-amount" id="detailPriceAmount">₹1,50,000</div>
+                        <div class="price-per" id="detailPricePer">Per Event</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-card-text" style="color:var(--violet-mid)"></i> Venue
+                    Description</div>
+                  <div class="card-v-body">
+                    <p class="desc-text" id="detailDescription">
+                      Grand Palace Banquet is one of Ahmedabad's most prestigious event venues, offering a luxurious
+                      setting for weddings, corporate galas, milestone celebrations, and social gatherings. Spread
+                      across 12,000 sq. ft., our elegantly appointed halls blend classic architecture with modern
+                      amenities.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Setup & Decoration -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header">
+                    <i class="bi bi-brush" style="color:var(--violet-mid)"></i>
+                    Setup & Decoration Options
+                  </div>
+
+                  <div class="card-v-body">
+                    <div class="setup-list">
+                      <!-- Setup Item -->
+                      <div class="setup-item-horizontal" style="display: flex;">
+                        <img class="setup-img"
+                          src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=600&q=80"
+                          alt="Royal Stage Decor" />
+                        <div class="setup-card-body">
+                          <div class="setup-top">
+                            <div>
+                              <div class="setup-name">Royal Stage Decor</div>
+                            </div>
+                            <div>
+                              <span class="setup-price-tag">₹35,000</span>
+                            </div>
+                          </div>
+                          <div class="setup-bottom">
+                            <span class="setup-avail avail-yes">
+                              <i class="bi bi-check-circle-fill"></i>
+                              <div>Always Available</div>
+                            </span>
+                          </div>
+                          <div class="setup-desc">
+                            <span style="font-weight:600;color:var(--txt-h)">Description:</span>
+                            A majestic stage setup featuring ornate floral arrangements, elegant drapery, and ambient
+                            lighting to create a fairy-tale atmosphere for your wedding ceremony.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-star-half" style="color:var(--violet-mid)"></i> Reviews
+                    &amp; Ratings</div>
+                  <div class="card-v-body">
+                    <div
+                      style="display:flex;align-items:center;gap:24px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+                      <div style="text-align:center">
+                        <div id="detailEventRatingValue"
+                          style="font-size:48px;font-weight:800;color:var(--txt-h);line-height:1">-</div>
+                        <div id="detailEventRatingStars" class="rating-stars" style="font-size:16px;margin:4px 0">
+                          <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i
+                            class="bi bi-star"></i><i class="bi bi-star"></i>
+                        </div>
+                        <div id="detailEventReviewCount" style="font-size:12px;color:var(--txt-m)">- reviews</div>
+                      </div>
+                      <div style="flex:1">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                          <span style="font-size:12px;color:var(--txt-m);width:20px">5</span>
+                          <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                            <div style="width:0%;height:100%;background:#F59E0B;border-radius:99px"></div>
+                          </div>
+                          <span id="detailEventBar5Count" style="font-size:12px;color:var(--txt-m)">-</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                          <span style="font-size:12px;color:var(--txt-m);width:20px">4</span>
+                          <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                            <div style="width:0%;height:100%;background:#FBBF24;border-radius:99px"></div>
+                          </div>
+                          <span id="detailEventBar4Count" style="font-size:12px;color:var(--txt-m)">-</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                          <span style="font-size:12px;color:var(--txt-m);width:20px">3</span>
+                          <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                            <div style="width:0%;height:100%;background:#FCD34D;border-radius:99px"></div>
+                          </div>
+                          <span id="detailEventBar3Count" style="font-size:12px;color:var(--txt-m)">-</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                          <span style="font-size:12px;color:var(--txt-m);width:20px">2</span>
+                          <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                            <div style="width:0%;height:100%;background:#FDE68A;border-radius:99px"></div>
+                          </div>
+                          <span id="detailEventBar2Count" style="font-size:12px;color:var(--txt-m)">-</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                          <span style="font-size:12px;color:var(--txt-m);width:20px">1</span>
+                          <div style="flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+                            <div style="width:0%;height:100%;background:#FDE68A;border-radius:99px"></div>
+                          </div>
+                          <span id="detailEventBar1Count" style="font-size:12px;color:var(--txt-m)">-</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="write-review-box" style="margin-bottom:20px">
+                      <div class="wrb-title"><i class="bi bi-pencil-square"></i> Write a Review for this Event</div>
+                      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;margin-bottom:10px">
+                        <div style="flex:1;min-width:220px;font-size:13px;color:var(--txt-m)">Share your experience for
+                          this venue. Your review helps other clients and the organizer.</div>
+                        <select class="fld" id="detailReviewRating" style="max-width:180px;min-width:160px">
+                          <option value="">Select rating</option>
+                          <option value="5">5 - Excellent</option>
+                          <option value="4">4 - Very good</option>
+                          <option value="3">3 - Good</option>
+                          <option value="2">2 - Fair</option>
+                          <option value="1">1 - Poor</option>
+                        </select>
+                      </div>
+                      <textarea class="review-textarea" id="detailReviewComment"
+                        placeholder="Share your experience with this event…"></textarea>
+                      <button class="btn-sky btn-sm" onclick="submitEventReview()"><i class="bi bi-send"></i>Submit
+                        Review</button>
+                    </div>
+                    <div id="detailEventReviewsList">
+                      <div class="no-data">Loading reviews...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-lg-4">
+
+                <!-- Basic Info -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-building" style="color:var(--violet-mid)"></i> Venue
+                    Details</div>
+                  <div class="card-v-body">
+                    <div class="contact-row">
+                      <i class="bi bi-house-door-fill"></i>
+                      <div>
+                        <div class="contact-lbl">Venue Name</div>
+                        <div class="contact-val venueName">Grand Palace Banquet</div>
+                      </div>
+                    </div>
+                    <div class="contact-row">
+                      <i class="bi bi-flower2"></i>
+                      <div>
+                        <div class="contact-lbl">Venue Type</div>
+                        <div class="contact-val venueType">Banquet Hall</div>
+                      </div>
+                    </div>
+                    <div class="contact-row">
+                      <i class="bi bi-people-fill"></i>
+                      <div>
+                        <div class="contact-lbl">Capacity</div>
+                        <div class="contact-val guests-limit">50 – 800 guests</div>
+                      </div>
+                    </div>
+                    <div class="contact-row">
+                      <i class="bi bi-currency-rupee"></i>
+                      <div>
+                        <div class="contact-lbl">Pricing</div>
+                        <div style="display: flex;">
+                          <div class="contact-val detailPriceAmount">₹1,50,000 </div><span
+                            class="contact-val detailPricePer">/ Per Event</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Location -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-geo-alt" style="color:var(--violet-mid)"></i> Location
+                  </div>
+                  <div class="card-v-body">
+                    <div class="contact-row">
+                      <i class="bi bi-geo-alt-fill"></i>
+                      <div>
+                        <div class="contact-lbl">Full Address</div>
+                        <div class="contact-val" id="detailFullAddress" style="font-size:13px;line-height:1.5">Near
+                          Vastrapur Lake, S.G. Highway, Ahmedabad, Gujarat – 380054</div>
+                      </div>
+                    </div>
+                    <div class="contact-row">
+                      <i class="bi bi-telephone-fill"></i>
+                      <div>
+                        <div class="contact-lbl">Contact</div>
+                        <div class="contact-val" id="detailContact">+91 98765 43210</div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+
+                <!-- Supported Events -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-tags" style="color:var(--violet-mid)"></i> Supported Events
+                  </div>
+                  <div class="card-v-body">
+                    <div class="events-chips" id="detailSupportedEvents">
+                      <span class="amenity-chip"><i class="bi bi-heart"></i> Wedding</span>
+                      <span class="amenity-chip"><i class="bi bi-briefcase"></i> Corporate</span>
+                      <span class="amenity-chip"><i class="bi bi-balloon"></i> Birthday</span>
+                      <span class="amenity-chip"><i class="bi bi-stars"></i> Anniversary</span>
+                      <span class="amenity-chip"><i class="bi bi-mortarboard"></i> Graduation</span>
+                      <span class="amenity-chip"><i class="bi bi-music-note"></i> Reception</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Amenities -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header"><i class="bi bi-stars" style="color:var(--violet-mid)"></i> Amenities</div>
+                  <div class="card-v-body">
+                    <div class="amenity-list" id="detailAmenities">
+                      <span class="amenity-chip"><i class="bi bi-snow"></i> AC</span>
+                      <span class="amenity-chip"><i class="bi bi-car-front"></i> Parking</span>
+                      <span class="amenity-chip"><i class="bi bi-wifi"></i> WiFi</span>
+                      <span class="amenity-chip"><i class="bi bi-easel3"></i> Stage</span>
+                      <span class="amenity-chip"><i class="bi bi-volume-up"></i> Sound System</span>
+                      <span class="amenity-chip"><i class="bi bi-projector"></i> Projector</span>
+                      <span class="amenity-chip"><i class="bi bi-lightning-charge"></i> Generator Backup</span>
+                      <span class="amenity-chip"><i class="bi bi-egg-fried"></i> Catering Allowed</span>
+                      <span class="amenity-chip"><i class="bi bi-flower3"></i> Decoration Allowed</span>
+                      <span class="amenity-chip"><i class="bi bi-door-closed"></i> Green Room</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- availability -->
+                <div class="card-v mb-4">
+                  <div class="card-v-header">
+                    <i class="bi bi-calendar-check" style="color:var(--violet-mid)"></i> Availability
+                  </div>
+                  <div class="card-v-body">
+                    <div class="availability-chips-wrap" id="availabilityChipsContainer">
+                      <div class="availability-cond availabilityDataType">available on:</div>
+                      <br>
+                      <div class="availability-data-chips" style="gap: 4px;">
+                        <div class="amenity-chip">
+                          <i class="bi bi-calendar-event"></i>
+                          <span class="chip-date availability-date">Apr 12, 2025</span>
+                          <span class="chip-time availability-time-from">10:00 AM</span>
+                          <span class="chip-time"> TO </span>
+                          <span class="chip-time availability-time-to">6:00 PM</span>
+                        </div>
+                      </div>
+                      <br>
+                      <p style="font-size: smaller;">Note:<br>do not enter unavailable date & time while booking </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- booking card -->
+        <div class="card-v mb-4 booking-card" style="display: none;">
+          <div class="card-v-header" style="justify-content: space-between;">
+            <div><i class="bi bi-calendar-plus" style="color:var(--violet-mid)"></i> Book This Venue</div>
+            <button class="btn-link-sky" onclick="backToMyEvents()"><i class="bi bi-arrow-left"></i> Back</button>
+          </div>
+          <div class="card-v-body">
+            <form id="bookingForm">
+              <!-- Event Type -->
+              <div class="mb-3">
+                <label class="fld-lbl">Event Type</label>
+                <select class="fld" id="eventType" required>
+                  <option value="">Select Event Type</option>
+                  <option value="corporate">Corporate</option>
+                  <option value="graduation">Graduation</option>
+                </select>
+              </div>
+              <!-- Guest Count -->
+              <div class="mb-3">
+                <label class="fld-lbl">Number of Guests <span class="guestLimit">(Limit: 0 To 500)</span></label>
+                <input type="number" class="fld" id="guestCount" placeholder="Enter guest count" min="1" required />
+              </div>
+              <!--  -->
+              <div class="row g-3">
+                <div id="bookingDatesContainer">
+                  <label class="fld-lbl">Enter Date & Time</label>
+                  <div class="booking-data booking-row mb-3 p-3"
+                    style="background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border)">
+                    <div class="row g-2">
+                      <div class="col-md-4">
+                        <label class="fld-label">Date *</label>
+                        <input type="date" class="fld-input booking-date" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="fld-label">From Time *</label>
+                        <input type="time" class="fld-input booking-time-from" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="fld-label">To Time *</label>
+                        <input type="time" class="fld-input booking-time-to" />
+                      </div>
+                      <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" style="align-items: center;" class="fld-input booking-remove-btn w-100"
+                          title="Remove">
+                          <i class="bi bi-trash3"></i> Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn-outline-v btn-sm" id="bookingBtn">
+                <i class="bi bi-plus-lg"></i> Add Another Date
+              </button>
+              <!-- Decoration Options -->
+              <div class="mb-3">
+                <label class="fld-lbl">Decoration Preferences</label>
+                <select class="fld" id="decorationSelect">
+                  <option value="">Select Setup</option>
+                  <option value="">No Decoration</option>
+                </select>
+              </div>
+              <!-- Message Textarea -->
+              <div class="mb-3">
+                <label class="fld-lbl">Additional Messages</label>
+                <textarea class="fld" id="bookingMessage" rows="3"
+                  placeholder="Share any special requests or requirements…"></textarea>
+              </div>
+
+              <div class="booking-amount">
+                <p>Total Amount: <span id="totalAmount">₹0</span></p>
+              </div>
+              <!-- Submit Button -->
+              <button type="button" class="btn-sky" id="booking-request" style="width:100%"><i
+                  class="bi bi-check-circle"></i>Submit Booking Request</button>
+              <div id="bookingError" style="color:red;margin-top:10px;"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- ░░░░ MY BOOKINGS ░░░░ -->
+      <div class="page" id="page-bookings">
+        <div class="sec-hdr">
+          <div class="sec-hdr-l">
+            <h3>My Bookings</h3>
+            <p>All your event bookings in one place</p>
+          </div>
+        </div>
+        <div class="booking-page-grid mb-3">
+          <div class="booking-mini-card">
+            <div class="bmc-icon" style="background:var(--sky-pale);color:var(--sky)"><i
+                class="bi bi-calendar-check"></i></div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--txt-h);font-family:'Playfair Display',serif"
+                id="clientTotalBookingsCount">0</div>
+              <div style="font-size:12.5px;color:var(--txt-m)">Total Bookings</div>
+            </div>
+          </div>
+          <div class="booking-mini-card">
+            <div class="bmc-icon" style="background:var(--green-pale);color:var(--green)"><i
+                class="bi bi-check-circle"></i></div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--txt-h);font-family:'Playfair Display',serif"
+                id="clientConfirmedBookingsCount">0</div>
+              <div style="font-size:12.5px;color:var(--txt-m)">Confirmed</div>
+            </div>
+          </div>
+          <div class="booking-mini-card">
+            <div class="bmc-icon" style="background:var(--amber-pale);color:var(--amber)"><i
+                class="bi bi-hourglass-split"></i></div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--txt-h);font-family:'Playfair Display',serif"
+                id="clientPendingBookingsCount">0</div>
+              <div style="font-size:12.5px;color:var(--txt-m)">Pending</div>
+            </div>
+          </div>
+        </div>
+        <div class="filter-row mb-3" id="booking-tabs">
+          <div style="flex: 1; display:flex; gap:8px; align-items:center;">
+            <div class="ftab active" data-status="All">All</div>
+            <div class="ftab" data-status="CONFIRMED">Confirmed</div>
+            <div class="ftab" data-status="PENDING_PAYMENT">Pending</div>
+            <div class="ftab" data-status="CANCELLED">Cancelled</div>
+          </div>
+          <div class="global-search" style="width:300px; margin:0">
+            <i class="bi bi-search"></i>
+            <input type="text" id="bookingSearch" placeholder="Search bookings..." />
+          </div>
+        </div>
+        <div class="card-b mb-3" id="clientBookingDetailCard" style="display:none">
+          <div class="card-b-hdr" style="justify-content:space-between">
+            <div class="card-b-hdr-title"><i class="bi bi-receipt"></i>Booking Details</div>
+            <button class="btn-link-sky" id="clientBookingDetailClose"><i class="bi bi-x-lg"></i> Close</button>
+          </div>
+          <div style="padding:16px 18px">
+            <div style="display:flex;flex-wrap:wrap;gap:18px">
+              <div style="min-width:220px">
+                <div style="font-weight:700;color:var(--txt-h)" id="clientDetailVenue">Venue</div>
+                <div style="font-size:12px;color:var(--txt-m)" id="clientDetailCompany">Company</div>
+                <div style="font-size:12px;color:var(--txt-m)" id="clientDetailCity">City</div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--txt-m)">Status</div>
+                <div id="clientDetailStatus"></div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--txt-m)">Guests</div>
+                <div id="clientDetailGuests"></div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--txt-m)">Total</div>
+                <div id="clientDetailAmount"></div>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+              <div style="font-size:12px;color:var(--txt-m)">Dates & Times</div>
+              <div id="clientDetailDates" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div>
+            </div>
+            <div style="margin-top:12px">
+              <div style="font-size:12px;color:var(--txt-m)">Setup</div>
+              <div id="clientDetailSetup"></div>
+            </div>
+            <div style="margin-top:12px">
+              <div style="font-size:12px;color:var(--txt-m)">Message</div>
+              <div id="clientDetailMessage"></div>
+            </div>
+            <div style="margin-top:12px">
+              <div style="font-size:12px;color:var(--txt-m)">Payment</div>
+              <div id="clientDetailPaymentSummary"></div>
+              <div id="clientPaymentTimeline" style="margin-top:10px"></div>
+              <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap" id="clientDetailPaymentActions"></div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap" id="clientDetailActions"></div>
+          </div>
+        </div>
+        <div class="card-b">
+          <div style="overflow-x:auto">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Event Name</th>
+                  <th>Organizer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="clientBookingsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░░░ SAVED ORGANIZERS ░░░░ -->
+      <div class="page" id="page-saved">
+        <div class="sec-hdr">
+          <div class="sec-hdr-l">
+            <h3>Saved Events</h3>
+            <p>Your saved venues and packages</p>
+          </div>
+        </div>
+        <div class="events-grid" id="savedEventsGrid"></div>
+      </div>
+
+
+      <!-- ░░░░ REVIEWS ░░░░ -->
+      <div class="page" id="page-reviews">
+        <div class="sec-hdr">
+          <div class="sec-hdr-l">
+            <h3>My Reviews</h3>
+            <p>Reviews you've written for event organizers</p>
+          </div>
+        </div>
+        <div class="write-review-box">
+          <div class="wrb-title"><i class="bi bi-pencil-square"></i>Write a New Review</div>
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;margin-bottom:10px">
+            <select class="fld" id="reviewEventSelect" style="max-width:260px;min-width:240px">
+              <option value="">Select an event to review…</option>
+            </select>
+            <select class="fld" id="reviewRating" style="max-width:180px;min-width:160px">
+              <option value="">Select rating</option>
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Very good</option>
+              <option value="3">3 - Good</option>
+              <option value="2">2 - Fair</option>
+              <option value="1">1 - Poor</option>
+            </select>
+          </div>
+          <textarea class="review-textarea" id="reviewComment"
+            placeholder="Share your experience with this organizer…"></textarea>
+          <button class="btn-sky btn-sm" onclick="submitClientReview()"><i class="bi bi-send"></i>Submit Review</button>
+        </div>
+        <div id="clientReviewsContainer" class="reviews-list">
+          <div class="no-data">Loading reviews...</div>
+        </div>
+      </div>
+
+      <!-- ░░░░ PROFILE SETTINGS ░░░░ -->
+      <div class="page" id="page-profile">
+        <div class="sec-hdr">
+          <div class="sec-hdr-l">
+            <h3>Profile Settings</h3>
+            <p>Manage your account and preferences</p>
+          </div><button class="btn-sky btn-sm" id="saveProfile"><i class="bi bi-floppy2-fill"></i>Save Changes</button>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="profile-cover-card">
+              <div class="p-cover">
+                <div class="p-avatar-wrap prof-us">
+                  <img id="profileImage" src="./assets/default-pfp.png" class="p-avtar-img" />
+                  <div class="user-name p-name cardUserName">Tushar123</div>
+                </div>
+              </div>
+              <div class="p-body">
+                <div class="p-name full-name cardFullName">Tushar Rathi</div>
+                <div class="p-meta cardLocation">Mumbai</div>
+                <div class="p-stats">
+                  <div class="p-stat">
+                    <div class="sv">18</div>
+                    <div class="sl">Bookings</div>
+                  </div>
+                  <div class="p-stat">
+                    <div class="sv">7</div>
+                    <div class="sl">Reviews</div>
+                  </div>
+                  <div class="p-stat">
+                    <div class="sv">8</div>
+                    <div class="sl">Saved</div>
+                  </div>
+                </div>
+                <div class="" style="width:100%;justify-content:center; margin-top: 10px">
+                  <input type="file" id="profilePicInput" accept="image/*" style="display:none"
+                    onchange="handleProfilePicUpload(event)" />
+                  <button class="btn-sky-o btn-sm" style="width:100%;justify-content:center"
+                    onclick="document.getElementById('profilePicInput').click()"><i class="bi bi-camera"></i>Change
+                    Profile Picture</button>
+                  <div id="uploadStatus" style="margin-top:8px;font-size:12px;color:var(--txt-m)"></div>
+                </div>
+                <div class="note">
+                  <h3>• </h3>
+                  <h6> select only square picture.</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="card-b mb-4">
+              <div class="card-b-hdr">
+                <div class="card-b-hdr-title"><i class="bi bi-person"></i>Personal Information</div>
+              </div>
+              <div style="padding:20px">
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="fld-lbl">Full Name</label><input type="text" id="fullName"
+                      class="fld" value="Tushar" /></div>
+                  <div class="col-md-6"><label class="fld-lbl">Username </label><input type="text" id="userName"
+                      class="fld" value="Rathi" disabled /></div>
+                  <div class="col-md-6"><label class="fld-lbl">Email Address</label><input type="email" id="email"
+                      class="fld" value="tushar@email.com" disabled /></div>
+                  <div class="col-md-6"><label class="fld-lbl">Phone Number</label><input type="tel" id="phone"
+                      class="fld" value="+91 98765 12345" /></div>
+                  <div class="col-md-6"><label class="fld-lbl">City</label><input type="text" id="city" class="fld"
+                      value="Mumbai" /></div>
+                  <div class="col-md-6"><label class="fld-lbl">State</label><input type="text" id="state" class="fld"
+                      value="Maharashtra" /></div>
+                  <div class="col-12"><label class="fld-lbl">About Me</label><textarea id="about" class="fld"
+                      rows="3">Event enthusiast who loves memorable celebrations. Planning events for family and corporate clients for 3+ years.</textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-b">
+              <div class="card-b-hdr">
+                <div class="card-b-hdr-title"><i class="bi bi-shield-lock"></i>Password & Security</div>
+              </div>
+              <div style="padding:20px">
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="fld-lbl">Current Password</label><input type="password"
+                      id="currentPassword" class="fld" placeholder="••••••••" /></div>
+                  <div class="col-md-6"><label class="fld-lbl">New Password</label><input type="password"
+                      id="newPassword" class="fld" placeholder="••••••••" /></div>
+                  <div class="col-md-6"><label class="fld-lbl">Confirm Password</label><input type="password"
+                      id="confirmPassword" class="fld" placeholder="••••••••" /></div>
+                  <div class="col-12"><button class="btn-sky-o btn-sm" id="updatePasswordBtn"
+                      onclick="updatePassword()">Update Password</button></div>
+                  <div id="profileError" style="color:red; margin-bottom:10px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end pg-body -->
+  </div><!-- end main-wrap -->
+
+  <!-- Edit Booking Modal -->
+  <div class="profile-modal-backdrop" id="editBookingModal">
+    <div class="profile-modal" style="max-width: 600px;">
+      <div class="profile-modal-hdr">
+        <div class="profile-modal-title"><i class="bi bi-pencil-square"></i> Request Booking Changes</div>
+        <button class="profile-modal-close" onclick="closeEditBookingModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="profile-modal-body" style="padding: 20px;">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="fld-lbl">Guests</label>
+            <input type="number" id="editBookingGuests" class="fld" />
+          </div>
+          <div class="col-12">
+            <label class="fld-lbl">Preferred Date & Time</label>
+            <div id="editBookingDatesContainer"></div>
+            <button class="btn-ghost-sm mt-2" onclick="addEditBookingDate()"><i class="bi bi-plus-lg"></i> Add Another Slot</button>
+          </div>
+          <div class="col-12">
+            <label class="fld-lbl">Setup Type</label>
+            <input type="text" id="editBookingSetup" class="fld" />
+          </div>
+          <div class="col-12">
+            <label class="fld-lbl">Message to Organizer</label>
+            <textarea id="editBookingMessage" class="fld" rows="3"></textarea>
+          </div>
+          <div class="col-12" style="margin-top: 20px;">
+            <button class="btn-sky w-100" onclick="submitBookingChangeRequest()">Submit Change Request</button>
+            <p style="font-size: 11px; color: var(--txt-m); margin-top: 10px; text-align: center;">
+              Note: Changes are subject to organizer approval. Price may be adjusted by the organizer.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Organizer Profile Modal -->
+  <div class="profile-modal-backdrop" id="organizerProfileModal">
+    <div class="profile-modal">
+      <div class="profile-modal-hdr">
+        <div class="profile-modal-title"><i class="bi bi-person-badge"></i> Organizer Profile</div>
+        <button class="profile-modal-close" id="organizerProfileClose"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="profile-modal-body">
+        <div class="profile-modal-top">
+          <img id="organizerProfileImg" src="./assets/default-pfp.png" class="profile-modal-img" alt="Organizer" />
+          <div>
+            <div class="profile-modal-name" id="organizerProfileCompany">Company</div>
+            <div class="profile-modal-sub" id="organizerProfileName">Name</div>
+            <div class="profile-modal-sub" id="organizerProfileCity">City</div>
+          </div>
+        </div>
+        <div class="profile-modal-info">
+          <div><strong>Email:</strong> <span id="organizerProfileEmail">—</span></div>
+          <div><strong>Phone:</strong> <span id="organizerProfilePhone">—</span></div>
+          <div><strong>About:</strong> <span id="organizerProfileAbout">—</span></div>
+        </div>
+      </div>
+      <div class="profile-modal-actions">
+        <button class="btn-ghost-sm btn-sm" id="organizerProfileSaveBtn"><i class="bi bi-bookmark-heart-fill"></i> Save
+          Organizer</button>
+        <button class="btn-sky btn-sm" id="organizerProfileBookBtn"><i class="bi bi-calendar-plus"></i> Book
+          Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Confirmation Modal -->
+  <div class="pay-modal-backdrop" id="paymentConfirmModal">
+    <div class="pay-modal">
+      <div class="pay-modal-hdr">
+        <div class="pay-modal-title"><i class="bi bi-shield-check"></i> Confirm Payment</div>
+        <button class="pay-modal-close" id="paymentConfirmClose"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="pay-modal-body">
+        <div class="pay-modal-event" id="paymentConfirmEvent">Event</div>
+        <div class="pay-modal-amt" id="paymentConfirmAmount">—</div>
+        <div class="pay-modal-meta" id="paymentConfirmStage">Stage</div>
+        <div class="pay-modal-note">This is a fake payment for demo/testing. No real money will be charged.</div>
+      </div>
+      <div class="pay-modal-actions">
+        <button class="btn-ghost-sm btn-sm" id="paymentConfirmCancel">Cancel</button>
+        <button class="btn-sky btn-sm" id="paymentConfirmPay">Confirm Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script src="js/client.js"></script>
+</body>
+
+</html>

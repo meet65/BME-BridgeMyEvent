@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bridge My Event</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+
+    <script>
+      (function() {
+        const storedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-bs-theme", storedTheme);
+      })();
+    </script>
+
+    <style>
+      :root {
+        --join-bg: #ffffff;
+        --join-ink: #16181b;
+        --join-muted: #494b5b;
+        --join-primary: #215c5c;
+        --join-primary-deep: #144b4b;
+        --join-accent: #cce8c9;
+        --join-card: rgba(255, 255, 255, 0.95);
+        --join-border: rgba(73, 75, 91, 0.12);
+        --join-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.06);
+      }
+
+      body {
+        min-height: 100vh;
+        color: var(--join-ink);
+        font: 1rem/1.7 "Inter", sans-serif;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: auto;
+        width: 20rem;
+        height: 20rem;
+        border-radius: 999px;
+        filter: blur(12px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body::before {
+        top: 5rem;
+        right: -5rem;
+        background: rgba(204, 232, 201, 0.55);
+      }
+
+      body::after {
+        left: -6rem;
+        bottom: 3rem;
+        background: rgba(33, 92, 92, 0.12);
+      }
+
+      .fbs__net-navbar {
+        position: sticky;
+        z-index: 3;
+      }
+
+      #navbar {
+        background-color: var(--nav-bg);
+    }
+
+      
+
+      .auth-shell {
+        position: relative;
+        z-index: 1;
+        padding: 3rem 0 4rem;
+      }
+
+      .auth-card {
+        overflow: hidden;
+        border: 1px solid rgba(73, 75, 91, 0.08);
+        border-radius: 2rem;
+        background: rgba(255, 255, 255, 0.88);
+        /* box-shadow: var(--join-shadow); */
+        backdrop-filter: blur(18px);
+      }
+
+      .auth-panel {
+        position: relative;
+        padding: 2.5rem;
+      }
+
+      .auth-panel--intro {
+        color: #ffffff;
+        background:
+          linear-gradient(160deg, rgba(33, 92, 92, 0.96), rgba(20, 75, 75, 0.92)),
+          url("./assets/IMG-20251005-WA0002.jpg") center/cover no-repeat;
+      }
+
+      .auth-panel--intro::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at top right, rgba(204, 232, 201, 0.28), transparent 24%),
+          linear-gradient(180deg, rgba(22, 24, 27, 0.08), rgba(22, 24, 27, 0.28));
+      }
+
+      .auth-panel--intro > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .auth-title {
+        font-family: "Inter", sans-serif;
+        font-size: clamp(2.15rem, 4vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1.12;
+        margin: 1.5rem 0 1rem;
+      }
+
+      .auth-copy {
+        max-width: 34rem;
+        color: rgba(255, 250, 243, 0.84);
+        font-size: 1.05rem;
+      }
+
+      .auth-highlights {
+        display: block;
+        gap: 10px;
+      }
+
+      .highlight-card {
+        margin-top: 10px;
+        padding: 1rem 1.1rem;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .highlight-card span {
+        display: block;
+        margin-top: 0.35rem;
+        color: rgba(255, 250, 243, 0.72);
+        font-size: 0.92rem;
+      }
+
+      .highlight-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.9rem;
+        color: var(--join-primary);
+        background: var(--join-accent);
+      }
+
+      .auth-form-panel {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 248, 0.96));
+      }
+
+      .form-panel-head h1 {
+        font-family: "Inter", sans-serif;
+        font-size: clamp(1.9rem, 3vw, 2.3rem);
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+      }
+
+      .form-panel-head p {
+        color: var(--join-muted);
+        margin-bottom: 0;
+      }
+
+      .auth-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 0.4rem;
+        border-radius: 1.25rem;
+        background: rgba(204, 232, 201, 0.28);
+        border: 1px solid rgba(33, 92, 92, 0.08);
+      }
+
+      .auth-nav .nav-link {
+        border: 0;
+        border-radius: 1rem;
+        padding: 0.95rem 1rem;
+        color: var(--join-muted);
+        font-weight: 700;
+      }
+
+      .auth-nav .nav-link.active {
+        color: #fff;
+        background: linear-gradient(135deg, var(--join-primary), var(--join-primary-deep));
+        box-shadow: 0 14px 30px rgba(33, 92, 92, 0.22);
+      }
+
+      .auth-surface {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 1.6rem;
+        background: var(--join-card);
+        border: 1px solid rgba(73, 75, 91, 0.08);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+      }
+
+      .section-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.38rem 0.8rem;
+        margin-bottom: 1rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--join-primary);
+        text-transform: uppercase;
+        border-radius: 999px;
+        background: rgba(204, 232, 201, 0.45);
+      }
+
+      .auth-surface h2 {
+        font-family: "Inter", sans-serif;
+        font-size: 1.45rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .auth-surface p {
+        color: var(--join-muted);
+      }
+
+      .form-label {
+        margin-bottom: 0.45rem;
+        font-weight: 700;
+        color: #374151;
+      }
+
+      .form-control,
+      .form-select,
+      .input-group .btn,
+      .event-option {
+        border-radius: 1rem;
+      }
+
+      .form-control,
+      .form-select {
+        min-height: 3.25rem;
+        border: 1px solid rgba(73, 75, 91, 0.12);
+        background: #ffffff;
+        box-shadow: none;
+      }
+
+      textarea.form-control {
+        min-height: auto;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--join-primary);
+        box-shadow: 0 0 0 0.2rem rgba(33, 92, 92, 0.14);
+      }
+
+      .auth-submit {
+        min-height: 3.25rem;
+        border: 0;
+        border-radius: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .btn-login-style {
+        color: #fff;
+        background: var(--join-primary);
+      }
+
+      .btn-register-style {
+        color: #fff;
+        background: var(--join-primary);
+      }
+
+      .btn-login-style:hover,
+      .btn-register-style:hover,
+      .btn-login-style:focus,
+      .btn-register-style:focus {
+        color: #fff;
+        background: var(--join-primary-deep);
+      }
+
+      .auth-message {
+        min-height: 1.2rem;
+        font-size: 0.95rem;
+      }
+
+      .role-switcher {
+        padding: 1rem 1rem 0.3rem;
+        margin-bottom: 1.25rem;
+        border-radius: 1.2rem;
+        background: rgba(204, 232, 201, 0.18);
+        border: 1px solid var(--join-border);
+      }
+
+      .form-block {
+        display: none;
+        animation: riseUp 0.35s ease;
+      }
+
+      .event-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .event-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.9rem 1rem;
+        height: 100%;
+        border: 1px solid rgba(73, 75, 91, 0.08);
+        background: #ffffff;
+      }
+
+      .event-option .form-check-input {
+        margin-top: 0.2rem;
+      }
+
+      .event-option .form-check-input:checked {
+        background-color: var(--join-primary);
+        border-color: var(--join-primary);
+      }
+
+      .event-option .form-check-label {
+        font-size: 0.95rem;
+        color: #374151;
+      }
+
+      .form-section-card {
+        padding: 1.1rem;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(73, 75, 91, 0.08);
+        background: rgba(204, 232, 201, 0.12);
+      }
+
+      .form-section-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .input-group .btn {
+        padding-inline: 1rem;
+        font-weight: 700;
+      }
+
+      .organizer-shell {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .micro-note {
+        font-size: 0.88rem;
+        color: var(--join-muted);
+      }
+
+      @keyframes riseUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 991.98px) {
+        .auth-panel {
+          padding: 1.8rem;
+        }
+
+        .auth-highlights,
+        .event-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 575.98px) {
+        .auth-shell {
+          padding-top: 1.5rem;
+        }
+
+        .auth-card {
+          border-radius: 1.5rem;
+        }
+
+        .auth-panel {
+          padding: 1.2rem;
+        }
+
+        .auth-surface {
+          padding: 1rem;
+          border-radius: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header id="nav-main" class="fbs__net-navbar navbar navbar-expand-lg dark" aria-label="freebootstrap.net navbar">
+      <div id="navbar" class="container d-flex align-items-center justify-content-between">
+        <a class="navbar-brand w-auto" href="index.html">
+          <img id="logo" class="logo dark img-fluid" src="./assets/Screenshot 2025-09-30 033046.png" alt="Bridge My Event logo">
+        </a>
+
+        <div class="offcanvas offcanvas-start w-75" id="fbs__net-navbars" tabindex="-1" aria-labelledby="fbs__net-navbarsLabel">
+          <div class="offcanvas-header">
+            <div class="offcanvas-header-logo">
+              <a class="logo-link" id="fbs__net-navbarsLabel" href="index.html">
+                <img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="Bridge My Event logo">
+              </a>
+            </div>
+            <button class="btn-close btn-close-black" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body align-items-lg-center">
+            <ul class="navbar-nav nav me-auto ps-lg-5 mb-2 mb-lg-0">
+              <li class="nav-item"><a class="nav-link scroll-link active" aria-current="page" href="./index.html#home">Home</a></li>
+              <li class="nav-item"><a class="nav-link scroll-link" href="./index.html#about">About</a></li>
+              <li class="nav-item"><a class="nav-link scroll-link" href="./index.html#how-it-works">How It Works</a></li>
+              <li class="nav-item"><a class="nav-link scroll-link" href="./index.html#services">Services</a></li>
+              <li class="nav-item"><a class="nav-link scroll-link" href="./index.html#contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ms-auto w-auto">
+          <div class="header-social d-flex align-items-center gap-1">
+            <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
+              <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="21" x2="3" y1="6" y2="6"></line>
+                <line x1="15" x2="3" y1="12" y2="12"></line>
+                <line x1="17" x2="3" y1="18" y2="18"></line>
+              </svg>
+              <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-shell">
+      <div class="container">
+        <div class="auth-card row g-0">
+          <div class="col-lg-5">
+            <section class="auth-panel auth-panel--intro h-100 d-flex flex-column">
+              <div>
+                <span class="auth-eyebrow"><i class="fa-solid fa-sparkles"></i> Welcome to Bridge My Event</span>
+                <h1 class="auth-title">Step into a sharper event network.</h1>
+                <p class="auth-copy">
+                  Access your account, register as a client, or apply as an organizer with a cleaner and more confident experience built for modern event collaboration.
+                </p>
+              </div>
+
+              <div class="auth-highlights">
+                <div class="highlight-card">
+                  <div class="highlight-icon"><i class="fa-solid fa-bolt"></i></div>
+                  Faster onboarding
+                  <span>Move from signup to action without changing your existing workflow.</span>
+                </div>
+                <div class="highlight-card">
+                  <div class="highlight-icon"><i class="fa-solid fa-shield-heart"></i></div>
+                  Trusted access
+                  <span>Separate paths for clients, organizers, and admin login stay clear and secure.</span>
+                </div>
+                <div class="highlight-card">
+                  <div class="highlight-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                  Event-ready setup
+                  <span>Organizers can present event expertise and service locations from one place.</span>
+                </div>
+                <div class="highlight-card">
+                  <div class="highlight-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                  Professional first look
+                  <span>A stronger visual impression for new users joining your platform.</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="col-lg-7">
+            <section class="auth-panel auth-form-panel">
+              <div class="form-panel-head mb-4">
+                <h1>Account Access</h1>
+                <p>Same backend, same fields, refreshed presentation for login and registration.</p>
+              </div>
+
+              <ul class="nav auth-nav mb-0" id="authTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">
+                    <i class="fa-solid fa-right-to-bracket me-2"></i>Login
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">
+                    <i class="fa-solid fa-user-plus me-2"></i>Register
+                  </button>
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                  <div class="auth-surface">
+                    <span class="section-tag"><i class="fa-solid fa-lock"></i> Sign in</span>
+                    <h2>Welcome back</h2>
+                    <p class="mb-4">Choose your role and continue to your dashboard.</p>
+
+                    <form>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label for="loginRole" class="form-label">Login as</label>
+                          <select class="form-select" id="loginRole" required>
+                            <option value="" disabled selected>Select role</option>
+                            <option value="organizer">Organizer</option>
+                            <option value="client">Client</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </div>
+                        <div class="col-12">
+                          <label for="loginEmail" class="form-label">Email address</label>
+                          <input type="email" class="form-control" id="loginEmail" placeholder="you@example.com" required>
+                        </div>
+                        <div class="col-12">
+                          <label for="loginPassword" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                        <div class="col-12">
+                          <button type="submit" id="loginUser" class="auth-submit btn-login-style w-100">Login</button>
+                          <div id="errorBox" class="auth-message text-danger mt-3"></div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                  <div class="auth-surface">
+                    <span class="section-tag"><i class="fa-solid fa-id-card"></i> Create account</span>
+                    <h2>Join the platform</h2>
+                    <p class="mb-4">Register as a client or organizer using the same fields your current logic already expects.</p>
+
+                    <form id="registerForm">
+                      <div class="role-switcher">
+                        <label for="registerRole" class="form-label">Register as</label>
+                        <select class="form-select" id="registerRole" name="role" required>
+                          <option value="" disabled selected>Select role</option>
+                          <option value="organizer">Organizer</option>
+                          <option value="client">Client</option>
+                        </select>
+                      </div>
+
+                      <div id="clientRegisterForm" class="form-block">
+                        <div class="row g-3">
+                          <div class="col-md-6">
+                            <label for="clientFullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="clientFullName" name="clientFullName">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="clientUserName" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="clientUserName" name="clientUserName">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="clientEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="clientEmail" name="clientEmail">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="clientPhone">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="clientPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="clientPassword" name="clientPassword">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="clientConfirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="clientConfirmPassword" name="clientConfirmPassword" required>
+                          </div>
+                          <div class="col-12">
+                            <div id="clientError" class="auth-message text-danger mb-2"></div>
+                            <button type="submit" id="clientRegister" class="auth-submit btn-register-style w-100">Create Account</button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div id="organizerRegisterForm" class="form-block organizer-shell">
+                        <div class="form-section-card">
+                          <h3>Business identity</h3>
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <label for="organizerFullName" class="form-label">Full Name</label>
+                              <input type="text" class="form-control" id="organizerFullName" name="organizerFullName">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerCompanyName" class="form-label">Company Name</label>
+                              <input type="text" class="form-control" id="organizerCompanyName" name="organizerCompanyName">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerEmail" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="organizerEmail" name="organizerEmail">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerPhone" class="form-label">Mobile No.</label>
+                              <input type="text" class="form-control" name="organizerPhone" id="organizerPhone">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerExperience" class="form-label">Experience (in years)</label>
+                              <input type="number" class="form-control" id="organizerExperience" name="organizerExperience">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerGST" class="form-label">GST Number</label>
+                              <input type="text" class="form-control" id="organizerGST" name="organizerGST">
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-section-card">
+                          <h3>Event expertise</h3>
+                          <p class="micro-note mb-3">Select all event types you handle. Field names stay exactly the same.</p>
+                          <div class="event-grid" id="organizerEventsGrid">
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventCorporateMeeting" name="organizerEvents[]" value="corporate-meeting">
+                              <label class="form-check-label" for="eventCorporateMeeting">Corporate Meeting</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventBusinessConference" name="organizerEvents[]" value="business-conference">
+                              <label class="form-check-label" for="eventBusinessConference">Business Conference</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventProductLaunch" name="organizerEvents[]" value="product-launch">
+                              <label class="form-check-label" for="eventProductLaunch">Product Launch</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventPressConference" name="organizerEvents[]" value="press-conference">
+                              <label class="form-check-label" for="eventPressConference">Press Conference</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventNetworkingEvent" name="organizerEvents[]" value="networking-event">
+                              <label class="form-check-label" for="eventNetworkingEvent">Networking Event</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventBusinessPitchSession" name="organizerEvents[]" value="business-pitch-session">
+                              <label class="form-check-label" for="eventBusinessPitchSession">Business Pitch Session</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventPanelDiscussion" name="organizerEvents[]" value="panel-discussion">
+                              <label class="form-check-label" for="eventPanelDiscussion">Panel Discussion</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventAnnualBusinessReview" name="organizerEvents[]" value="annual-business-review">
+                              <label class="form-check-label" for="eventAnnualBusinessReview">Annual Business Review</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventStartupDemoDay" name="organizerEvents[]" value="startup-demo-day">
+                              <label class="form-check-label" for="eventStartupDemoDay">Startup Demo Day</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventCorporateTrainingSession" name="organizerEvents[]" value="corporate-training-session">
+                              <label class="form-check-label" for="eventCorporateTrainingSession">Corporate Training Session</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventSeminar" name="organizerEvents[]" value="seminar">
+                              <label class="form-check-label" for="eventSeminar">Seminar</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventWorkshop" name="organizerEvents[]" value="workshop">
+                              <label class="form-check-label" for="eventWorkshop">Workshop</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventGuestLecture" name="organizerEvents[]" value="guest-lecture">
+                              <label class="form-check-label" for="eventGuestLecture">Guest Lecture</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventTechnicalTalk" name="organizerEvents[]" value="technical-talk">
+                              <label class="form-check-label" for="eventTechnicalTalk">Technical Talk</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventFdp" name="organizerEvents[]" value="fdp">
+                              <label class="form-check-label" for="eventFdp">Faculty Development Program (FDP)</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventStudentDevelopmentSession" name="organizerEvents[]" value="student-development-session">
+                              <label class="form-check-label" for="eventStudentDevelopmentSession">Student Development Session</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventAcademicSymposium" name="organizerEvents[]" value="academic-symposium">
+                              <label class="form-check-label" for="eventAcademicSymposium">Academic Symposium</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventResearchPresentation" name="organizerEvents[]" value="research-presentation">
+                              <label class="form-check-label" for="eventResearchPresentation">Research Presentation</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventOrientationProgram" name="organizerEvents[]" value="orientation-program">
+                              <label class="form-check-label" for="eventOrientationProgram">Orientation Program</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventSkillDevelopmentEvent" name="organizerEvents[]" value="skill-development-event">
+                              <label class="form-check-label" for="eventSkillDevelopmentEvent">Skill Development Event</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventCertificationSession" name="organizerEvents[]" value="certification-session">
+                              <label class="form-check-label" for="eventCertificationSession">Certification Session</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventLeadershipTraining" name="organizerEvents[]" value="leadership-training">
+                              <label class="form-check-label" for="eventLeadershipTraining">Leadership Training</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventTeamBuildingSession" name="organizerEvents[]" value="team-building-session">
+                              <label class="form-check-label" for="eventTeamBuildingSession">Team-Building Session</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventSoftSkillsWorkshop" name="organizerEvents[]" value="soft-skills-workshop">
+                              <label class="form-check-label" for="eventSoftSkillsWorkshop">Soft Skills Workshop</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventEntrepreneurshipEvent" name="organizerEvents[]" value="entrepreneurship-event">
+                              <label class="form-check-label" for="eventEntrepreneurshipEvent">Entrepreneurship Event</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventDigitalMarketingBootcamp" name="organizerEvents[]" value="digital-marketing-bootcamp">
+                              <label class="form-check-label" for="eventDigitalMarketingBootcamp">Digital Marketing Bootcamp</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventCareerGuidanceEvent" name="organizerEvents[]" value="career-guidance-event">
+                              <label class="form-check-label" for="eventCareerGuidanceEvent">Career Guidance Event</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventTradeExhibit" name="organizerEvents[]" value="trade-exhibit">
+                              <label class="form-check-label" for="eventTradeExhibit">Trade Exhibit (Half-Day)</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventInvestorMeetup" name="organizerEvents[]" value="investor-meetup">
+                              <label class="form-check-label" for="eventInvestorMeetup">Investor Meetup</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventBrandLaunch" name="organizerEvents[]" value="brand-launch">
+                              <label class="form-check-label" for="eventBrandLaunch">Brand Launch</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventCsrActivity" name="organizerEvents[]" value="csr-activity">
+                              <label class="form-check-label" for="eventCsrActivity">CSR Activity</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventEducationalAwardFunction" name="organizerEvents[]" value="educational-award-function">
+                              <label class="form-check-label" for="eventEducationalAwardFunction">Educational Award Function</label>
+                            </div>
+                            <div class="event-option form-check">
+                              <input class="form-check-input" type="checkbox" id="eventOther" name="organizerEvents[]" value="other">
+                              <label class="form-check-label" for="eventOther">Other</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-section-card">
+                          <h3>Profile details</h3>
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <label for="organizerDescription" class="form-label">Description</label>
+                              <textarea class="form-control" id="organizerDescription" name="organizerDescription" rows="4"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                              <label for="organizerAbout" class="form-label">About</label>
+                              <textarea class="form-control" id="organizerAbout" name="organizerAbout" rows="4"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-section-card">
+                          <h3>Locations & contact numbers</h3>
+                          <p class="micro-note mb-3">Add one or more service locations exactly as before.</p>
+                          <div id="organizerLocations">
+                            <div class="input-group mb-2">
+                              <input type="text" class="form-control" name="organizerLocation[]" placeholder="Enter address">
+                              <button type="button" class="btn btn-outline-secondary add-location">+</button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-section-card">
+                          <h3>Security</h3>
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <label for="organizerPassword" class="form-label">Password</label>
+                              <input type="password" class="form-control" id="organizerPassword" name="organizerPassword">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="orgConfirmPassword" class="form-label">Confirm Password</label>
+                              <input type="password" class="form-control" id="orgConfirmPassword" name="orgConfirmPassword" required>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <button type="submit" id="organizerRegister" class="auth-submit btn-register-style w-100">Submit for Approval</button>
+                          <div id="orgError" class="auth-message text-danger mt-3"></div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.getElementById("registerRole").addEventListener("change", function() {
+        const role = this.value;
+        document.getElementById("clientRegisterForm").style.display = role === "client" ? "block" : "none";
+        document.getElementById("organizerRegisterForm").style.display = role === "organizer" ? "grid" : "none";
+      });
+
+      document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("add-location")) {
+          const container = document.getElementById("organizerLocations");
+          const newInput = document.createElement("div");
+          newInput.className = "input-group mb-2";
+          newInput.innerHTML = `
+            <input type="text" class="form-control" name="organizerLocation[]" placeholder="Enter address">
+            <button type="button" class="btn btn-outline-danger remove-location">-</button>
+          `;
+          container.appendChild(newInput);
+        }
+
+        if (e.target.classList.contains("remove-location")) {
+          e.target.parentElement.remove();
+        }
+      });
+    </script>
+    <script src="js/login.js"></script>
+    <script src="js/register.js"></script>
+  </body>
+</html>
