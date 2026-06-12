@@ -71,7 +71,6 @@ public class ClientProfileController {
                     .getContext()
                     .getAuthentication()
                     .getName();
-
             String msg = clientService.changePassword(email, req);
 
             return ResponseEntity.ok(Map.of("message", msg));

@@ -815,7 +815,6 @@ textarea.fld{resize:vertical;min-height:90px;}
   .booking-page-grid{grid-template-columns:1fr;}
 }
 @media(max-width:480px){
-  .global-search{display:none;}
   .stats-grid{grid-template-columns:1fr 1fr;}
 }
 
@@ -2053,4 +2052,46 @@ select.fld-input,
     width: 38px;
   }
 }
+
+/* ── MOBILE RESPONSIVE POLISH ── */
+@media (max-width: 576px) {
+  .global-search,
+  .global-search[style] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 8px 0 0 0 !important;
+  }
+  
+  .filter-row select,
+  .filter-row input,
+  .filter-row select.fld,
+  .filter-row input.fld {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .fld-label, label, .contact-val, .contact-lbl, td, th {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  #booking-tabs {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  
+  #booking-tabs > div:first-child {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  #booking-tabs > div:first-child .ftab {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
 

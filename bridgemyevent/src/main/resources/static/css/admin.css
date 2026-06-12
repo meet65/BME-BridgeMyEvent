@@ -714,10 +714,46 @@ body{
 }
 @media(max-width:480px){
   .kpi-grid{grid-template-columns:1fr 1fr;}
-  .search-box{display:none;}
   .settings-grid{grid-template-columns:1fr;}
 }
 
+
+/* --------------------------------------------
+   MOBILE RESPONSIVE — 576px and below
+-------------------------------------------- */
+@media(max-width:576px){
+  /* Always show search box on mobile */
+  .search-box{display:flex;width:100%;max-width:100%;}
+  /* Search boxes inside headers fill the row */
+  .sec-hdr .search-box,.card-hdr .search-box,
+  .sec-hdr .search-box.d-flex,.card-hdr .search-box.d-flex{
+    width:100%;max-width:100%;
+  }
+  /* Stack section/card headers vertically */
+  .sec-hdr{flex-direction:column;align-items:flex-start;gap:8px;}
+  .card-hdr{flex-direction:column;align-items:flex-start;gap:8px;}
+  /* Filter bars go full-width */
+  .filter-bar{flex-direction:column;align-items:stretch;gap:8px;}
+  .filter-bar .ftab,.filter-bar select,.filter-bar input{
+    width:100%;box-sizing:border-box;
+  }
+  /* All form inputs full-width */
+  .fld,.fld-input,.fld-select,
+  input[type="date"],input[type="month"],input[type="number"],
+  input[type="text"],input[type="email"],input[type="search"],select{
+    width:100%;max-width:100%;box-sizing:border-box;
+  }
+  /* Labels wrap */
+  .fld-lbl,label,.detail-label{
+    overflow-wrap:break-word;word-break:break-word;white-space:normal;
+  }
+  /* Analytics KPI single column */
+  .analytics-kpi{grid-template-columns:1fr;}
+  /* Top-bar wraps on tiny screens */
+  .top-bar{flex-wrap:wrap;height:auto;min-height:var(--hdr-h);padding:8px 14px;gap:8px;}
+  /* Action buttons can wrap */
+  .actions-wrap{flex-wrap:wrap;gap:6px;}
+}
 /* Scrollbar */
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
 

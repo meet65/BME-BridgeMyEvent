@@ -17,7 +17,7 @@ public class DashboardController {
 
     private final DashboardInitService dashboardInitService;
 
-    @PostMapping("/init") //  for test only
+    @PostMapping("/init") 
     public ResponseEntity<?> initDashboard(Authentication auth) {
         User user = (User) auth.getPrincipal();
         return ResponseEntity.ok(dashboardInitService.init(user));

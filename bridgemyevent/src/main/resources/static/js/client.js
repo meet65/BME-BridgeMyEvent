@@ -168,6 +168,10 @@ async function updatePassword() {
 async function handleProfilePicUpload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        showToast("File size must be under 5MB", "warning", "bi-exclamation-triangle-fill");
+        return;
+    }
     const token = getToken();
     if (!token) return;
     const formData = new FormData();

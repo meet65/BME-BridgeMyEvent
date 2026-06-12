@@ -2109,10 +2109,6 @@ textarea.fld-input {
     grid-template-columns: 2fr;
   }
 
-  .search-wrap {
-    display: none;
-  }
-
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -4155,3 +4151,46 @@ select.fld-input {
     border-radius: 14px;
   }
 }
+
+/* ── MOBILE RESPONSIVE POLISH ── */
+@media (max-width: 576px) {
+  .search-wrap,
+  .search-wrap[style] {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    margin-top: 5px;
+  }
+  
+  .search-wrap input,
+  .search-wrap input[style] {
+    width: 100% !important;
+  }
+
+  input[type="date"].fld-input,
+  select.fld-input,
+  #bookingsSpecificDate,
+  #bookingsAdminFeeFilter {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-top: 5px;
+  }
+
+  .filter-bar {
+    gap: 8px;
+  }
+
+  .filter-tab {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .fld-label, label, .contact-val, .contact-lbl, td, th {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}
+

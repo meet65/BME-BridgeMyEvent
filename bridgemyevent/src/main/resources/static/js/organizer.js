@@ -1516,10 +1516,10 @@ async function updateProfile() {
         locations: locationsArray,
         experience: document.getElementById("experience").value.trim(),
         description: document.getElementById("description").value.trim(),
-        instagram: document.getElementById("instagram").value.trim(),
-        facebook: document.getElementById("facebook").value.trim(),
-        youTube: document.getElementById("youTube").value.trim(),
-        website: document.getElementById("website").value.trim()
+        instagram: document.getElementById("instagram")?.value.trim() || "",
+        facebook: document.getElementById("facebook")?.value.trim() || "",
+        youTube: document.getElementById("youTube")?.value.trim() || "",
+        website: document.getElementById("website")?.value.trim() || ""
     };
 
     try {
@@ -1629,6 +1629,11 @@ async function handleProfilePicUpload(event) {
     const status = document.getElementById("uploadStatus");
 
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        if (status) status.innerText = "File size must be under 5MB";
+        showToast("File size must be under 5MB", "warning", "bi-exclamation-triangle-fill");
+        return;
+    }
 
     const token = localStorage.getItem("token");
 
